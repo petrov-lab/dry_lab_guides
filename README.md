@@ -299,7 +299,7 @@ One of the most powerful aspects of Snakemake is the ability to have containers 
 When using conda with Snakemake, you need to provide a path to a `yaml` file that describes the environment. To generate a `yaml` file of a given environment use the following command.
 ```bash
 # with the conda env active
-conda env export --from-history > environment.yaml
+conda env export --no-builds > environment.yaml
 ```
 Then we, 1) pass this file location to the rule that needs the conda env.
 ```python
