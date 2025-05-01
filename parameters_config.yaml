@@ -1,0 +1,8 @@
+reference:
+  location: "/home/groups/dpetrov/jahemker/reference/v6.63/D.melanogaster.fa"
+project:
+  dir: "/scratch/users/jahemker"
+samples:
+  "/scratch/users/jahemker/sv_popgen/samples.txt"
+envs:
+  genometools: "/home/users/jahemker/drosophila_sv_popgen/envs/genometools.yaml"
