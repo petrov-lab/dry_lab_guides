@@ -338,6 +338,14 @@ conda-prefix: /home/groups/dpetrov/jahemker/miniconda3/envs/
 TBD actual conda downloading behaviors. I think it follows `conda-prefix` and if there is no `conda-prefix` set then it downloads into the typical conda directories.
 
 ---
+
+Secret conda env hack
+
+There is a way to make Snakemake use conda envs that already exist without downloading anything extra. There are a few issues with this. First, it's not reproducible, but for your own research it would work. Second, while the function exists, there is a long-standing bug in the Snakemake code and thus you have to edit the Snakemake source code. Again you should mark that you did this, and it lowers reproducibility.
+
+https://github.com/snakemake/snakemake/pull/1708#issuecomment-1824539407
+
+---
 Singularity is generally easier to use, but requires a lot more effort to make a container if you don't already have it. Here, we need to put the location of the singularity image. Docker works similarly, but Sherlock doesn't allow Docker.
 ```python
 rule align_reads:
