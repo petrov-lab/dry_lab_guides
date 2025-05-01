@@ -56,8 +56,8 @@ Importantly, the `shell` section does not follow bash syntax for variables, but 
 Ultimately our goal is to be submitting these jobs to Sherlock, and for that we will need to define the resources each rule requires. We do this in the `resources` field of the rule. Later, we will see how to set-up default values for the different resources so that we do not have to always list everything out. (For example, the partition is not explicitly stated here, because we are ok with using with the default partition value is)
 ```python
 rule align_reads:
-	resources:
-		time = "4:00:00",
+    resources:
+	time = "4:00:00",
         cpus = 16,
         mem_mb = 32000
     input:
@@ -93,8 +93,8 @@ Snakemake does not blindly run every rule written in the workflow. If a rule is 
 The power of Snakemake is it's ability to easily scale a workflow to many samples. We do this by generalizing our rules using wildcards. For every value of a wildcard, snakemake will run that rule, populating all instances of the wildcard with the same value.
 ```python
 rule align_reads:
-	resources:
-		time = "4:00:00",
+    resources:
+	time = "4:00:00",
         cpus = 16,
         mem_mb = 32000
     input:
@@ -118,20 +118,20 @@ Note: if you need to use wildcards within the `shell` section of the rule, you h
 How does Snakemake know what values to fill the wildcards with? It again goes back to defining the necessary output files. If we are using wildcards, then it's likely we will have multiple, almost-identical files. Snakemake has a special function `expand` that will take a pattern and automatically populate it with values from a given list. We can use this in our `rule all`.
 ```python
 rule all:
-	input:
-		expand("/scratch/users/jahemker/bams/{sample}.reads.sorted.bam", sample=SAMPLES)
+    input:
+	expand("/scratch/users/jahemker/bams/{sample}.reads.sorted.bam", sample=SAMPLES)
 ```
 We just need to make sure that the list of `SAMPLES` is defined somewhere, and we can just use basic python for that. In full, our `Snakefile` looks like
 ```python
 SAMPLES = ["dmel1","dmel2","dmel3"]
 
 rule all:
-	input:
-		expand("/scratch/users/jahemker/bams/{sample}.sorted.bam", sample=SAMPLES)
+    input:
+	expand("/scratch/users/jahemker/bams/{sample}.sorted.bam", sample=SAMPLES)
 
 rule align_reads:
-	resources:
-		time = "4:00:00",
+    resources:
+	time = "4:00:00",
         cpus = 16,
         mem_mb = 32000
     input:
@@ -304,18 +304,18 @@ conda env export --no-builds > environment.yaml
 Then we, 1) pass this file location to the rule that needs the conda env.
 ```python
 rule align_reads:
-	resources:
-		time = "4:00:00",
+    resources:
+	time = "4:00:00",
         cpus = 16,
         mem_mb = 32000
     conda:
-		"/scratch/users/jahemker/environment.yaml"
+	"/scratch/users/jahemker/environment.yaml"
     input:
         ref="/scratch/users/jahemker/D.melanogaster.fa",
         ref_idx="/scratch/users/jahemker/D.melanogaster.fa.fai",
         reads="/scratch/users/jahemker/reads/{sample}.fastq.gz"
     output:
-		bamfile="/scratch/users/jahemker/bams/{sample}.reads.sorted.bam"
+	bamfile="/scratch/users/jahemker/bams/{sample}.reads.sorted.bam"
     params:
         samfile="/scratch/users/jahemker/bams/{sample}.reads.sam"
     shell:
@@ -350,12 +350,12 @@ https://github.com/snakemake/snakemake/pull/1708#issuecomment-1824539407
 Singularity is generally easier to use, but requires a lot more effort to make a container if you don't already have it. Here, we need to put the location of the singularity image. Docker works similarly, but Sherlock doesn't allow Docker.
 ```python
 rule align_reads:
-	resources:
-		time = "4:00:00",
+    resources:
+	time = "4:00:00",
         cpus = 16,
         mem_mb = 32000
     singularity:
-	    "/scratch/users/jahemker/aligner.sif"
+	"/scratch/users/jahemker/aligner.sif"
     input:
         ref="/scratch/users/jahemker/D.melanogaster.fa",
         ref_idx="/scratch/users/jahemker/D.melanogaster.fa.fai",
@@ -390,8 +390,8 @@ conda-prefix: "/path/"
 Finally, you can also use the modules provided by Sherlock, but this will only be reproducible within the Sherlock system. You can just load the modules in the `shell` section of the rule:
 ```
 rule align_reads:
-	resources:
-		time = "4:00:00",
+    resources:
+	time = "4:00:00",
         cpus = 16,
         mem_mb = 32000
     input:
@@ -432,16 +432,16 @@ SAMPLES = open(config["samples"], 'r').readlines()
 SAMPlES = [x.rstrip() for x in SAMPLES]
 
 rule all:
-	input:
-		expand(f"{config['project']['dir']}/bams/{{sample}}.sorted.bam", sample=SAMPLES)
+    input:
+	expand(f"{config['project']['dir']}/bams/{{sample}}.sorted.bam", sample=SAMPLES)
 
 rule align_reads:
-	resources:
-		time = "4:00:00",
+    resources:
+	time = "4:00:00",
         cpus = 16,
         mem_mb = 32000
     conda:
-	    config['envs']['genometools']
+	config['envs']['genometools']
     input:
         ref=config['reference']['location'],
         ref_idx=f"{config['project']['dir']}/D.melanogaster.fa.fai",
@@ -468,12 +468,12 @@ restart-times: 3
 New `resources` section:
 ```python
 rule align_reads:
-	resources:
-		time = lambda wildcards, attempt: 240 + 240 * (attempt-1),
+    resources:
+	time = lambda wildcards, attempt: 240 + 240 * (attempt-1),
         cpus = lambda wildcards, attempt: 16 + 16 * (attempt-1),
         mem_mb = lambda wildcards, attempt: 16000 + 16000 * (attempt-1)
     conda:
-	    config['envs']['genometools']
+	config['envs']['genometools']
     input:
         ref=config['reference']['location'],
         ref_idx=f"{config['project']['dir']}/D.melanogaster.fa.fai",
