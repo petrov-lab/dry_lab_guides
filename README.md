@@ -329,17 +329,16 @@ rule align_reads:
 Next, we need to add some new arguments to our `profile/config.yaml` to tell Snakemake to use conda.
 ```bash
 # Add these to use conda
+sdm: conda
 use-conda: True
 conda-prefix: /home/groups/dpetrov/jahemker/miniconda3/envs/
 ```
 `use-conda` simply says to use conda
 `conda-prefix` is optional, but it tells Snakemake where to download the conda env to.
 
-TBD actual conda downloading behaviors. I think it follows `conda-prefix` and if there is no `conda-prefix` set then it downloads into the typical conda directories.
+TBD actual conda downloading behaviors. I think it follows `conda-prefix` and downloads the packages there. This should be used as otherwise it will default to the current `.snakemake/` directory, and that can take up a lot of storage space (Assuming you're keeping your snakemake stuff in `$HOME` rather than `$GROUP_HOME`).
 
----
-
-Secret conda env hack
+#### Secret conda env hack
 
 There is a way to make Snakemake use conda envs that already exist without downloading anything extra. There are a few issues with this. First, it's not reproducible, but for your own research it would work. Second, while the function exists, there is a long-standing bug in the Snakemake code and thus you have to edit the Snakemake source code. Again you should mark that you did this, and it lowers reproducibility.
 
@@ -380,7 +379,40 @@ sdm: apptainer
 # If using GPU nodes with singularity
 singularity-args: "--nv"
 ```
+If you need to use both conda and singularity:
+```
+sdm: {conda,apptainer}
+use-conda: True
+conda-prefix: "/path/"
+```
 
+---
+Finally, you can also use the modules provided by Sherlock, but this will only be reproducible within the Sherlock system. You can just load the modules in the `shell` section of the rule:
+```
+rule align_reads:
+	resources:
+		time = "4:00:00",
+        cpus = 16,
+        mem_mb = 32000
+    input:
+        ref="/scratch/users/jahemker/D.melanogaster.fa",
+        ref_idx="/scratch/users/jahemker/D.melanogaster.fa.fai",
+        reads="/scratch/users/jahemker/reads/{sample}.fastq.gz"
+    output:
+        bamfile="/scratch/users/jahemker/bams/{sample}.reads.sorted.bam"
+    params:
+        samfile="/scratch/users/jahemker/bams/{sample}.reads.sam"
+    shell:
+        '''
+	ml biology
+	ml samtools
+
+        minimap2 -a -x map-ont {input.ref} {input.reads} > {params.samfile}
+        samtools sort -o {output.bamfile} {params.samfile}
+        samtools index -b {output.bamfile}
+        rm {params.samfile}
+        '''
+```
 ### Generalizing workflows with user-defined parameters
 Currently, our rules have hard-coded paths and values that make it hard for other users to easily use the pipeline. We can remedy this by having all of these values in an easy-to-edit config file (`parameters_config.yaml`) that then populates the main `Snakefile`.
 ```bash
