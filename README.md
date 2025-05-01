@@ -343,6 +343,8 @@ Secret conda env hack
 
 There is a way to make Snakemake use conda envs that already exist without downloading anything extra. There are a few issues with this. First, it's not reproducible, but for your own research it would work. Second, while the function exists, there is a long-standing bug in the Snakemake code and thus you have to edit the Snakemake source code. Again you should mark that you did this, and it lowers reproducibility.
 
+https://github.com/snakemake/snakemake/issues/3192
+
 https://github.com/snakemake/snakemake/pull/1708#issuecomment-1824539407
 
 ---
