@@ -328,37 +328,6 @@ rule align_reads:
 ```
 Next, we need to add some new arguments to our `profile/config.yaml` to tell Snakemake to use conda.
 ```bash
-executor: cluster-generic
-configfile: parameters_config.yaml
-cluster-generic-submit-cmd:
-  mkdir -p logs/ &&
-  sbatch
-    --partition={resources.partition}
-    --cpus-per-task={threads}
-    --mem={resources.mem_mb}
-    --job-name={rule}
-    --output=logs/{rule}-{wildcards}-%j.out
-    --time={resources.time}
-    --parsable
-cluster-generic-cancel-cmd:
-  scancel
-cluster-generic-status-cmd:
-  profile/status_sacct.sh
-default-resources:
-  - partition=hns,normal,dpetrov
-  - mem_mb=4000
-  - time="1:00:00"
-  - cpus_per_task=1
-rerun-triggers: mtime
-restart-times: 0
-max-jobs-per-second: 10
-max-status-checks-per-second: 1
-local-cores: 1
-latency-wait: 60
-jobs: 100
-keep-going: True
-rerun-incomplete: True
-printshellcmds: True
 # Add these to use conda
 use-conda: True
 conda-prefix: /home/groups/dpetrov/jahemker/miniconda3/envs/
