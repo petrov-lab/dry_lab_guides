@@ -56,9 +56,10 @@ Importantly, the `shell` section does not follow bash syntax for variables, but 
 Ultimately our goal is to be submitting these jobs to Sherlock, and for that we will need to define the resources each rule requires. We do this in the `resources` field of the rule. Later, we will see how to set-up default values for the different resources so that we do not have to always list everything out. (For example, the partition is not explicitly stated here, because we are ok with using with the default partition value is)
 ```python
 rule align_reads:
+    threads: 16
     resources:
 	time = "4:00:00",
-        cpus = 16,
+        cpus = threads,
         mem_mb = 32000
     input:
         ref="/scratch/users/jahemker/D.melanogaster.fa",
@@ -93,9 +94,10 @@ Snakemake does not blindly run every rule written in the workflow. If a rule is 
 The power of Snakemake is it's ability to easily scale a workflow to many samples. We do this by generalizing our rules using wildcards. For every value of a wildcard, snakemake will run that rule, populating all instances of the wildcard with the same value.
 ```python
 rule align_reads:
+    threads: 16
     resources:
 	time = "4:00:00",
-        cpus = 16,
+        cpus = threads,
         mem_mb = 32000
     input:
         ref="/scratch/users/jahemker/D.melanogaster.fa",
@@ -130,9 +132,10 @@ rule all:
 	expand("/scratch/users/jahemker/bams/{sample}.sorted.bam", sample=SAMPLES)
 
 rule align_reads:
+    threads: 16
     resources:
 	time = "4:00:00",
-        cpus = 16,
+        cpus = threads,
         mem_mb = 32000
     input:
         ref="/scratch/users/jahemker/D.melanogaster.fa",
@@ -304,9 +307,10 @@ conda env export --no-builds > environment.yaml
 Then we, 1) pass this file location to the rule that needs the conda env.
 ```python
 rule align_reads:
+    threads: 16
     resources:
 	time = "4:00:00",
-        cpus = 16,
+        cpus = threads,
         mem_mb = 32000
     conda:
 	"/scratch/users/jahemker/environment.yaml"
@@ -350,9 +354,10 @@ https://github.com/snakemake/snakemake/pull/1708#issuecomment-1824539407
 Singularity is generally easier to use, but requires a lot more effort to make a container if you don't already have it. Here, we need to put the location of the singularity image. Docker works similarly, but Sherlock doesn't allow Docker.
 ```python
 rule align_reads:
+    threads: 16
     resources:
 	time = "4:00:00",
-        cpus = 16,
+        cpus = threads,
         mem_mb = 32000
     singularity:
 	"/scratch/users/jahemker/aligner.sif"
@@ -390,9 +395,10 @@ conda-prefix: "/path/"
 Finally, you can also use the modules provided by Sherlock, but this will only be reproducible within the Sherlock system. You can just load the modules in the `shell` section of the rule:
 ```
 rule align_reads:
+    threads: 16
     resources:
 	time = "4:00:00",
-        cpus = 16,
+        cpus = threads,
         mem_mb = 32000
     input:
         ref="/scratch/users/jahemker/D.melanogaster.fa",
@@ -436,9 +442,10 @@ rule all:
 	expand(f"{config['project']['dir']}/bams/{{sample}}.sorted.bam", sample=SAMPLES)
 
 rule align_reads:
+    threads: 16
     resources:
 	time = "4:00:00",
-        cpus = 16,
+        cpus = threads,
         mem_mb = 32000
     conda:
 	config['envs']['genometools']
@@ -468,9 +475,10 @@ restart-times: 3
 New `resources` section:
 ```python
 rule align_reads:
+    threads: 16
     resources:
 	time = lambda wildcards, attempt: 240 + 240 * (attempt-1),
-        cpus = lambda wildcards, attempt: 16 + 16 * (attempt-1),
+        cpus = lambda wildcards, attempt: threads + threads * (attempt-1),
         mem_mb = lambda wildcards, attempt: 16000 + 16000 * (attempt-1)
     conda:
 	config['envs']['genometools']
