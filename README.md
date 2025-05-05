@@ -53,7 +53,7 @@ rule align_reads:
 
 Importantly, the `shell` section does not follow bash syntax for variables, but instead uses Snakemake's variables syntax.
 
-Ultimately our goal is to be submitting these jobs to Sherlock, and for that we will need to define the resources each rule requires. We do this in the `resources` field of the rule. Later, we will see how to set-up default values for the different resources so that we do not have to always list everything out. (For example, the partition is not explicitly stated here, because we are ok with using with the default partition value is)
+Ultimately our goal is to be submitting these jobs to Sherlock, and for that we will need to define the resources each rule requires. We do this in the `threads` and `resources` field of the rule. Later, we will see how to set-up default values for the different resources so that we do not have to always list everything out. (For example, the partition is not explicitly stated here, because we are ok with using with the default partition value is). `threads` can just be thought of as the number of cpus you want. If you don't define `threads`, it defaults to 1.
 ```python
 rule align_reads:
     threads: 16
@@ -227,6 +227,8 @@ Note: `parameters_config.yaml`, `submit_snakemake.sh`, and `profile/` can be ren
 ---
 
 Let's briefly look at `profile/config.yaml` to see what arguments we will be running the `snakemake` command with.
+
+NOTE: This has been updated, there is no longer a default `--cpus-per-task` line.
 ```bash
 executor: cluster-generic
 configfile: parameters_config.yaml
@@ -248,7 +250,6 @@ default-resources:
   - partition=hns,normal,dpetrov
   - mem_mb=4000
   - time="1:00:00"
-  - cpus_per_task=1
 rerun-triggers: mtime
 restart-times: 0
 max-jobs-per-second: 10
@@ -525,3 +526,5 @@ Make sure to condense rules sufficiently. If a command takes just a few seconds 
 There are a lot more Snakemake tricks and functions that can be used to help make workflows more efficient. I'd definitely recommend looking through the documentation or googling to see what other people have done. https://snakemake.readthedocs.io/en/stable/index.html
 
 For working Snakemake workflows that use different kinds of scripts, singularity containers, GPU nodes, and other stuff, see https://github.com/jahemker/drosophila_ultralong_sv_calling/workflows/
+
+Stuff about config files and how Snakemake interacts with SLURM can be found here: https://github.com/jdblischak/smk-simple-slurm/tree/main
