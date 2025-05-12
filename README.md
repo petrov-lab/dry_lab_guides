@@ -468,7 +468,7 @@ rule align_reads:
 ```
 
 ### Generalizing resource usage for variable-resource rules
-If you have rules that can greatly change the amount of resources needed depending on the sample, it can be useful to have auto-changing resource values. Using this setup, if a job fails (with the implication being it didn't have enough resources), then it will resubmit the job with incrementally higher resources. Changes need to be made in `profile/config.yaml` to enable job resubmission as well as the rules themselves.
+If you have rules that can greatly change the amount of resources needed depending on the sample, it can be useful to have auto-changing resource values. Using this setup, if a job fails (with the implication being it didn't have enough resources), then it will resubmit the job with incrementally higher resources. Changes need to be made in `profile/config.yaml` to enable job resubmission as well as the rules themselves. Note here that time can also be just an integer, which is interpreted as number of minutes.
 ```bash
 # Change the following argument in profile/config.yaml
 restart-times: 3
@@ -476,10 +476,10 @@ restart-times: 3
 New `resources` section:
 ```python
 rule align_reads:
-    threads: 16
+    threads: lambda wildcards, attempt: 16 + 16 * (attempt-1)
     resources:
 	time = lambda wildcards, attempt: 240 + 240 * (attempt-1),
-        cpus = lambda wildcards, attempt: threads + threads * (attempt-1),
+        cpus = threads,
         mem_mb = lambda wildcards, attempt: 16000 + 16000 * (attempt-1)
     conda:
 	config['envs']['genometools']
