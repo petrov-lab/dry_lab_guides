@@ -499,6 +499,52 @@ rule align_reads:
         rm {params.samfile}
         '''
 ```
+### Job Grouping
+There may be times where you have to run a low-resource rule many times (i.e. do some trivial file manipulation once for every sample, but you have hundreds of samples). In this case, the bottleneck will be submitting jobs to the cluster and having them wait in the Sherlock queue rather than actually doing the command. Job grouping helps to alleviate this problem by lumping rules together and submitting them as a single job to Sherlock.
+
+For example, we want to split up our VCF file by chromosome, and we have to do this for each sample. This job will have to run n_chrom * n_sample times, which can quickly become a huge number. 
+```
+rule split_gvcf:
+    threads: 1
+    resources:
+	cpus = threads
+        mem_mb = 4000
+    singularity:
+        config['singularity_images']['gatk']
+    input:
+        gvcf=f"{config['project']['dir']}/{{sample}}/vcfs/{{sample}}.g.vcf.gz"
+    output:
+        vcf=temp(f"{config['project']['dir']}/{{sample}}/vcfs/{{sample}}.{{chrom}}.g.vcf.gz"),
+        idx=temp(f"{config['project']['dir']}/{{sample}}/vcfs/{{sample}}.{{chrom}}.g.vcf.gz.tbi")
+    shell:
+        '''
+        bcftools view --threads $(nproc) --regions {wildcards.chrom} -Oz -o {output.vcf} {input}
+        gatk IndexFeatureFile -I {output.vcf}
+        '''
+```
+
+Let's say there are 20 chromosomes and 100 samples, so the job will run 2,000 times. We can use job grouping to lump 100 of the individual jobs into a single larger job that actually gets submitted to Sherlock. This cuts our submitted jobs from 2,000 to 20. To do this we have to make some changes to the `profile/config.yaml` as well as to the rule.
+```
+# Add these arguments to profile/config.yaml
+cores: 16 
+groups:
+  - split_gvcf=group1
+group-components:
+  - group1=100
+```
+
+`cores` puts a global cap on the number of cpus any job can ask for. This is important with job grouping because when grouping rules, it adds up all of the resources all the jobs need to run at once. If I didn't have `cores: 16` then snakemake would try submitting a job that is 100 instances of `rule split_gvcf` while requesting 100 cpus and 100 * 4000mb of RAM. This is way overkill for what needs to happen here, so we limit it to 16 cpus total and change the rule's resources to ask for a small amount of RAM per job, which when multiplied with the total number of rules becomes a reasonable amount (100 * 100 mb = 10 gb).
+```
+# In the rule
+rule split_gvcf:
+    resources:
+        mem_mb = 100
+```
+
+The `groups` argument simply defines which rules are going to be in our groups. `group1` is really a user-defined name.
+The `group-components` argument is where we define how many instances of the rules should be lumped together for submission to Sherlock. This is what will also control the resources requested.
+
+See more info on job grouping here: https://github.com/jdblischak/smk-simple-slurm/tree/main/examples/job-grouping
 
 ### Debugging Snakemake on Sherlock
 Maybe the worst part of using Snakemake is debugging before you have a working pipeline. To make sure the `Snakefile` and all requisite config files are working correctly, you can do a dry-run of the workflow with the `-n` flag.
