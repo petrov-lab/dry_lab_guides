@@ -534,6 +534,8 @@ group-components:
 ```
 
 `cores` puts a global cap on the number of cpus any job can ask for. This is important with job grouping because when grouping rules, it adds up all of the resources all the jobs need to run at once. If I didn't have `cores: 16` then snakemake would try submitting a job that is 100 instances of `rule split_gvcf` while requesting 100 cpus and 100 * 4000mb of RAM. This is way overkill for what needs to happen here, so we limit it to 16 cpus total and change the rule's resources to ask for a small amount of RAM per job, which when multiplied with the total number of rules becomes a reasonable amount (100 * 100 mb = 10 gb).
+
+NOTE: This also means that any of your other rules will never get more cpus than is defined by `core`. Either you should set `core` to be the max number of cpus any of your rules will need, or run the grouped rules alone and set `cores` then.
 ```
 # In the rule
 rule split_gvcf:
