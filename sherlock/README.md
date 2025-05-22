@@ -58,7 +58,28 @@ The real power of using Sherlock is the access to the huge amounts of compute re
 
 Job Submission on Sherlock: https://www.sherlock.stanford.edu/docs/getting-started/submitting/?h=job+su#batch-scripts
 
+#### Partitions
 
+All of the nodes in the cluster are divided up into specific partitions. There are a certain number of nodes in each partition, and different partitions have different types of nodes. Each partition has its own specific resource limits with respect to time, CPUs, RAM, GPUs, etc. When you submit a job you want to be smart in choosing the right partitions to minimize your wait times. For example there is a specific partition `gpu` that has GPU resources. There is another partition `bigmem` that has increased amounts of available RAM.
+
+You can see all of the partitions you have access to with the command `sh_part`.
+My output is:
+```
+partition           || nodes         | CPU cores             | GPUs                 || job runtime     | mem/core        | per-node
+ name         public ||   idle  total |   idle  total  queued |   idle  total queued || default maximum | default maximum |    cores   mem(GB)  gpus
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+ normal*      yes    ||      0    218 |    616   5844   12941 |      0      0      0 ||      2h      7d |     6GB     8GB |    20-64   128-384     0
+ bigmem       yes    ||      0     11 |    413    824      69 |      0      0      0 ||      2h      1d |     6GB    64GB |   24-256  384-4096     0
+ gpu          yes    ||      0     33 |    403   1068     739 |     32    136    123 ||      1h      2d |     8GB    32GB |    20-64  191-2048   3-8
+ dev          yes    ||      0      4 |     67    104       0 |     59     64      0 ||      1h      2h |     6GB     8GB |    20-32   128-256  0-32
+ service      yes    ||      6      6 |    132    132       0 |      0      0      0 ||      1h      2h |     1GB     8GB |    20-32   128-256     0
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+ hns          no     ||      0    143 |    432   5164   13190 |      5     12      9 ||      2h      7d |     6GB    26GB |   20-256  128-1536   0-4
+ dpetrov      no     ||      0      4 |     42    128       0 |      0      0      0 ||      2h      7d |     8GB     8GB |       32       256     0
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+ owners       no     ||      7   1740 |   7297  63960    5512 |    826    884      1 ||      2h      2d |     4GB    48GB |   20-256  128-4096   0-8
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+```
 
 
 
