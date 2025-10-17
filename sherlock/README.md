@@ -12,13 +12,13 @@ Sherlock has multiple filesystem that serve different purposes. In the Petrov la
 
 `$HOME` aka `/home/users/[stanford_id]/` -- This is your own personal directory that only you can access. Everything stored here is permenant as long as you have an account on Sherlock. There are 15GB of storage, which is not a lot of space. This means you're forced to keep only important, personal files here. I personally keep all of my scripts and github repos here.
 
-`$HOME_GROUP` aka `/home/groups/dpetrov/` -- This is the lab's directory that only lab members can access. Everything stored here is permenant as long as the lab exists. There is 1TB of storage here, which can fill up fast if everyone dumps data into it. Generally it's recommended to have a personal directory within `$GROUP_HOME` and you can install any programs or tools that you may need. I personally keep download tools here as well as certain small files I consistently use such as reference fastas.
+`$HOME_GROUP` aka `/home/groups/dpetrov/` -- This is the lab's directory that only lab members can access. Everything stored here is permenant as long as the lab exists. There is 1TB of storage here, which can fill up fast if everyone dumps data into it. Generally it's recommended to have a personal directory within `$GROUP_HOME` and you can install any programs or tools that you may need. I personally keep downloaded tools here as well as certain small files I consistently use such as reference fastas.
 
-`$SCRATCH` aka `/scratch/users/[stanford_id]/` -- This is your own personal directory that only you can access. Everything stored here will be deleted after 3 months. The timer resets when a file is modified. Don't store stuff in scratch long term as it will be lost. There is a 100TB of storeage here, which is a ton. Use scratch for active analyses, for storing data (that you have backed-up elsewhere), and for intermediate files.
+`$SCRATCH` aka `/scratch/users/[stanford_id]/` -- This is your own personal directory that only you can access. Everything stored here will be deleted after 3 months. The timer resets when a file is modified. Don't store stuff in scratch long term as it will be lost. There is a 100TB of storeage here, which is a ton. Use scratch for active analyses, for storing data (that you have backed-up elsewhere), and for intermediate files. It's recommended to do analyses on `$SCRATCH` because it has a specialized file system that speeds up read/write operations. This can save significant time if your code is reading from files or writing new files (which is basically 80% of bioinformatics).
 
 `$GROUP_SCRATCH` aka `/scratch/groups/dpetrov/' -- This is the lab's scratch directory. Everything stored here will be deleted after 3 months. The timer resets when a file is modified. There is a 100TB of storage here also. Group scratch can be useful for working on data with other members in lab.
 
-`$OAK` aka `/oak/stanford/groups/dpetrov/' -- This is permenant storage for the lab. You need to be granted access to $OAK. There are 250TB of storage, which the lab pays for. $OAK is really only used by PCG.
+`$OAK` aka `/oak/stanford/groups/dpetrov/' -- This is permenant storage for the lab. You need to be granted access to `$OAK`. There are 250TB of storage, which the lab pays for. `$OAK` is really only used by PCG.
 
 Sherlock summarizes all the filesystem space info everytime you login:
 ```
@@ -80,6 +80,7 @@ partition           || nodes         | CPU cores             | GPUs             
  owners       no     ||      7   1740 |   7297  63960    5512 |    826    884      1 ||      2h      2d |     4GB    48GB |   20-256  128-4096   0-8
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
 
 
 
