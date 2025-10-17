@@ -8,7 +8,7 @@ Importantly, VSCode can connect to Sherlock and allow you to edit your Sherlock 
 
 ### Setup SFTP
 
-In order to connect to Sherlock, we will need to first create a directory somewhere on our local computer for VSCode to download files into. Next we will need to go to the Extensions tab (Fifth tab on the extreme left side of the window; Cmd/Ctrl+Shift+X) and download and install the SFTP plugin by publisher:"Natizyskunk". 
+In order to connect to Sherlock, we will need to first create a directory somewhere on our local computer for VSCode to download files into (ie. ~/Documents/sherlock/). Next we will need to go to the Extensions tab (Fifth tab on the extreme left side of the window; Cmd/Ctrl+Shift+X) and download and install the SFTP plugin by publisher:"Natizyskunk". 
 
 The extension page has instructions on how to connect to a remote server which I will summarize here.
 
@@ -61,4 +61,6 @@ All configuration settings can be found here: https://github.com/Natizyskunk/vsc
 
 You should now be able to see a couple drop down menus named `sherlock_home` and `sherlock_scratch` within the SFTP tab. You can basically treat this as a mini file explorer for Sherlock. You should be able to open files, edit and save them, and see the changes on Sherlock.
 
-The SFTP explorer does not auto refresh, so if you are making new directories or files on Sherlock, you will need to hit the little refresh button to see them in VSCode.
+**The SFTP explorer does not auto refresh**, so if you are making new directories or files on Sherlock, you will need to hit the little refresh button to see them in VSCode.
+
+Sometimes when VSCode is restarted, the SFTP extension tab will not be present and it will ask you to choose a workspace directory. You just need to point it in the direction of the original directory you set up for sherlock on your local computer (in this token example it was ~/Documents/sherlock/).
