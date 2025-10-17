@@ -18,7 +18,9 @@ Sherlock has multiple filesystem that serve different purposes. In the Petrov la
 
 `$GROUP_SCRATCH` aka `/scratch/groups/dpetrov/' -- This is the lab's scratch directory. Everything stored here will be deleted after 3 months. The timer resets when a file is modified. There is a 100TB of storage here also. Group scratch can be useful for working on data with other members in lab.
 
-`$OAK` aka `/oak/stanford/groups/dpetrov/' -- This is permenant storage for the lab. You need to be granted access to `$OAK`. There are 250TB of storage, which the lab pays for. `$OAK` is really only used by PCG.
+`$OAK` aka `/oak/stanford/groups/dpetrov/` -- This is permenant storage for the lab. You need to be granted access to `$OAK`. There are 250TB of storage, which the lab pays for. `$OAK` is really only used by PCG.
+
+If you don't know why there are dollar signs in front of the filesystems, it may be helpful to read up on bash syntax. The `$` denotes a variable, meaning you can refer to these filesystem locations just with the variable name in your code. Instead of hardcoding your username into your scripts (ie `/home/users/jahemker/useful_script.sh`), you can just use the variable, which makes it more shareable with others on sherlock as well (`$SCRATCH/useful_script.sh`)
 
 Sherlock summarizes all the filesystem space info everytime you login:
 ```
@@ -80,6 +82,7 @@ partition           || nodes         | CPU cores             | GPUs             
  owners       no     ||      7   1740 |   7297  63960    5512 |    826    884      1 ||      2h      2d |     4GB    48GB |   20-256  128-4096   0-8
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
 
 
 
