@@ -50,6 +50,8 @@ fi
 }
 ```
 
+Now, to uncompress any file, I just run `extract file.gz`.
+
 ### Commands for SLURM info
 
 `sh_part` -- Tells you resource information on all of the partitions you have access to.
@@ -63,4 +65,15 @@ fi
 Request an interactive compute node which will allow you to work on the command line with more resources. 
 ```
 srun -c $cpus -p dpetrov,hns,normal --time $time --mem $gigs_ram --pty bash
+```
+If you regularly work in interactive nodes, it may be worthwhile to turn this command into a function. The following function will ask for 8 cpus, 16Gb ram, and 12hrs of runtime on dpetrov,hns,normal. Simply type `iNode`. If you want different amounts, you can specifiy: `iNode 8 4 1`. This asks for 8 GB ram, 4 cpus, and 1hr runtime.
+```
+#calls for an interactive job. Defaults for 16G of ram, but can add more with cli args.
+function iNode {
+  gigs_ram="${1:-16}G"
+  cpus="${2:-8}"
+  time="${3:-12}:00:00"
+  command="srun -c $cpus -p dpetrov,hns,normal --time ${time} --mem $gigs_ram --pty bash"
+  eval $command
+}
 ```
