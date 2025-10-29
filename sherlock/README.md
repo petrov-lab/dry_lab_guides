@@ -4,8 +4,22 @@ The best way to learn about Sherlock is to read the documentation: https://www.s
 
 Other good resources are the Slack channels `#sherlock-users` and `#sherlock-announce`
 
+### Logging into Sherlock
+
+(Mac specific) You may have noticed that the connection to Sherlock drops if your screen goes to sleep. You can prevent this by ssh'ing into Sherlock while running the `caffeinate` command. There may be a similar windows command, but I haven't run into this issue on my windows desktop.
+```
+caffeinate -i ssh jahemker@login.sherlock.stanford.edu
+```
+Furthermore, you can make it easier on yourself by alias'ing this. Add the following line into `~/.bash_profile` or wherever you keep bash aliases on your laptop and restart your terminal. You can change the name of the alias from "sherlock" to whatever you want.
+```
+alias sherlock="caffeinate -i ssh jahemker@login.sherlock.stanford.edu"
+```
+
+Then to login, you just type `sherlock` in your terminal.
+
 ---
 
+If you want multiple terminal windows of Sherlock open, you can set it up so that you only have to do 2FA once. See here: https://www.sherlock.stanford.edu/docs/advanced-topics/connection/#avoiding-multiple-duo-prompts 
 ### Filesystems
 
 Sherlock has multiple filesystem that serve different purposes. In the Petrov lab, there are 4 (maybe 5) filesystems to be aware of.
@@ -82,6 +96,7 @@ partition           || nodes         | CPU cores             | GPUs             
  owners       no     ||      7   1740 |   7297  63960    5512 |    826    884      1 ||      2h      2d |     4GB    48GB |   20-256  128-4096   0-8
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
 
 
 
